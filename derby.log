@@ -1,0 +1,7 @@
+Apache Derby Network Server - 10.2.2.0 - (485682) started and ready to accept connections on port 1527 at 2014-03-24 20:28:10.928 GMT 
+----------------------------------------------------------------
+2014-03-24 20:28:22.182 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.2.2.0 - (485682): instance c013800d-0144-f5c7-69ff-00000000002e
+on database directory /Users/jeffy/Documents/Eclipse/WebGraphVis/warcbase  
+
+Database Class Loader started - derby.database.classpath=''
