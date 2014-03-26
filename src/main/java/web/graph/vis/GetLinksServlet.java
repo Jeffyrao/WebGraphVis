@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class GetLinksServlet extends HttpServlet implements Servlet {
 	
+	public static Connection conn = DerbyDatabase.getConnInstance();
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
@@ -18,7 +20,6 @@ public class GetLinksServlet extends HttpServlet implements Servlet {
 		if(id == null) id = "1";
 		request.getSession().setAttribute("id",id);
 		
-		Connection conn = DerbyDatabase.getConnInstance();
 		String sql = "";
 		
 		//Get all outgoing links
@@ -47,4 +48,5 @@ public class GetLinksServlet extends HttpServlet implements Servlet {
 		}
 		return output;
 	}
+
 }

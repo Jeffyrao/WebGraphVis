@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Properties;
 
 public class DerbyDatabase {
-	private static String dbLocation = "warcbase";
-    private static String dbURL = "jdbc:derby://localhost:1527/";
+	private static String dbLocation = "warcbase2";
+    //private static String dbURL = "jdbc:derby://localhost:1527/";
+	private static String dbURL = "jdbc:derby:";
     private static Connection conn = null;
     private static Statement stmt = null;
-    private static String driverName = "org.apache.derby.jdbc.ClientDriver";
+    //private static String driverName = "org.apache.derby.jdbc.ClientDriver";
+    private static String driverName = "org.apache.derby.jdbc.EmbeddedDriver";
     
     public static Connection getConnInstance()
     {
@@ -31,22 +33,59 @@ public class DerbyDatabase {
     {
         try
         {
-            Class.forName(driverName);
+        	//Class.forName(driverName);
+            Class.forName(driverName).newInstance(); //load embedded driver
+            System.out.println("Loaded the embedded driver");
             Properties dbProps = new Properties();
             dbProps.put("user", userName);
             dbProps.put("password", password);
-            conn = DriverManager.getConnection(dbURL + dbLocation, dbProps);
+            //conn = DriverManager.getConnection(dbURL + dbLocation, dbProps);
+            conn = DriverManager.getConnection(dbURL + dbLocation+";create=true", dbProps);
+            createDB(conn);
             System.out.println("Connection successful!");
         }
         catch (Exception except)
         {
             System.out.print("Could not connect to the database with username: " + userName);
             System.out.println(" password " + password);
-            System.out.println("Check that the Derby Network Server is running on localhost.");
+            //System.out.println("Check that the Derby Network Server is running on localhost.");
             except.printStackTrace();
         }
         return conn;
     }
+    
+    private static void createDB(Connection conn) throws SQLException{
+    	String createNodeTable = "CREATE TABLE APP.NODES( "
+    			+ "id varchar(20) NOT NULL primary key,"
+    			+ "name varchar(150),"
+				+ "pagerank varchar(20) NOT NULL," 
+				+ "url varchar(200) NOT NULL,"
+				+ "party char(20),"
+				+ "committee char(20),"
+				+ "state varchar(20),"
+				+ "district varchar(20) )";
+    	String insertDataToNodeTable = "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE "
+                                   +" ('APP', 'NODES','data/nodes.csv',',',null,null, 0)";
+    	
+    	String createLinkTable = "CREATE TABLE APP.LINKS("
+				+ "src varchar(20) NOT NULL,"
+				+ "dest varchar(20) NOT NULL,"
+				+ "weight varchar(20) NOT NULL,"
+				+ "subnodes varchar(20) NOT NULL,"
+				+ "src_url varchar(200) NOT NULL,"
+				+ "dest_url varchar(200) NOT NULL,"
+				+ "primary key(src, dest) )";
+    	String insertDataToLinkTable = "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE " +
+    	"( 'APP', 'LINKS','data/links.csv',',',null,null,0 )";
+    	
+    	Statement s = conn.createStatement();
+    	s.execute(createNodeTable);
+    	s.execute(insertDataToNodeTable);
+    	s.execute(createLinkTable);
+    	s.execute(insertDataToLinkTable);
+    	System.out.println("create table NODES and LINKS successfully");
+    }
+    
     public static int executeUpdate(Connection conn, String sql)
     {
         // the number of rows affected by the update or insert

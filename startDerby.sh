@@ -9,4 +9,4 @@ export DERBY_INSTALL=/opt/Apache/db-derby-10.10.1.1-bin
 export CLASSPATH=$DERBY_INSTALL/lib/derby.jar:$DERBY_INSTALL/lib/derbytools.jar:
 
 cd $PWD_PATH
-java -jar $DERBY_INSTALL/lib/derbyrun.jar server start
+#java -jar $DERBY_INSTALL/lib/derbyrun.jar server start
