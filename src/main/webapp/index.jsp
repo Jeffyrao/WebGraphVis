@@ -3,9 +3,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="http://dinbror.dk/bpopup/assets/jquery.bpopup-0.9.4.min.js"></script>
+  <script src="lib/d3.v3.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   <script src="./lib/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
   <script src="./lib/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
   <link rel="stylesheet" href="/lib/jquery-ui-1.10.4.custom/development-bundle/themes/base/jquery.ui.all.css">
@@ -151,7 +150,7 @@ function update(){
       node.attr("cx", function(d) { return d.x; })
           .attr("cy", function(d) { return d.y; });
     });
-  	
+  	var openflag = true;
 	var curr_node = {
 			<c:forEach items="${nodes}" var="node">
 				id: "${node.id}",
@@ -161,10 +160,11 @@ function update(){
 				state:"${node.state}",
 				party:"${node.party}",
 				committee:"${node.committee}",
-				district:"${node.district}",
+				district:"${node.district}"
 			</c:forEach>
 	};
-	if(!isEmpty(curr_node)){
+	if(!isEmpty(curr_node) && openflag){
+		console.log(curr_node);
 		createDialog(curr_node);
 	}
 	
@@ -195,29 +195,14 @@ function update(){
     	    data: "id="+d.id,  
     	    success: function(result){ 
     	    	//var json = $.parseJSON(result);
-    	    	//console.log(json);
     	    	$('body').html(result);
-    	    	uri = './images/' + d.name.replace(',','') +".png"		
-    	  		var content = setContent(d);
-    	        var popup = document.getElementById("contents")
-    	        popup.innerHTML = content;
-    	    
-    	        $('#contents').attr("title",setTitle(d))
-    	        .css({"font-size": +14+"px"})
-    	        .dialog({
-    	            width:'auto',
-    	            height:500,
-    	            modal: true,
-    	            open: function(event, ui){
-    	               $('#image').attr('src',uri);
-    	            }
-    	        });
     	    }  
       });  
     }
 	
     function createDialog(d){
-    	uri = './images/' + d.name.replace(',','') +".png"		
+    	uri = './images/' + d.name.replace(',','') +".png";
+    	console.log("create dialog");
   		var content = setContent(d);
         var popup = document.getElementById("contents")
         popup.innerHTML = content;
