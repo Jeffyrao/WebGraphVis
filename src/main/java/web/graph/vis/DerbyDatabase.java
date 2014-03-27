@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Properties;
 
 public class DerbyDatabase {
-	private static String dbLocation = "warcbase2";
+	private static String dbLocation = "warcbase";
     //private static String dbURL = "jdbc:derby://localhost:1527/";
 	private static String dbURL = "jdbc:derby:";
     private static Connection conn = null;
     private static Statement stmt = null;
     //private static String driverName = "org.apache.derby.jdbc.ClientDriver";
     private static String driverName = "org.apache.derby.jdbc.EmbeddedDriver";
+    private static int max = 10;
     
     public static Connection getConnInstance()
     {
@@ -39,16 +40,14 @@ public class DerbyDatabase {
             Properties dbProps = new Properties();
             dbProps.put("user", userName);
             dbProps.put("password", password);
-            //conn = DriverManager.getConnection(dbURL + dbLocation, dbProps);
-            conn = DriverManager.getConnection(dbURL + dbLocation+";create=true", dbProps);
-            createDB(conn);
+            conn = DriverManager.getConnection(dbURL + dbLocation, dbProps);
+            //createDB(conn);
             System.out.println("Connection successful!");
         }
         catch (Exception except)
         {
             System.out.print("Could not connect to the database with username: " + userName);
             System.out.println(" password " + password);
-            //System.out.println("Check that the Derby Network Server is running on localhost.");
             except.printStackTrace();
         }
         return conn;
@@ -65,7 +64,7 @@ public class DerbyDatabase {
 				+ "state varchar(20),"
 				+ "district varchar(20) )";
     	String insertDataToNodeTable = "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE "
-                                   +" ('APP', 'NODES','data/nodes.csv',',',null,null, 0)";
+                                   +" ('APP', 'NODES','src/main/webapp/data/nodes.csv',',',null,null, 0)";
     	
     	String createLinkTable = "CREATE TABLE APP.LINKS("
 				+ "src varchar(20) NOT NULL,"
@@ -76,9 +75,16 @@ public class DerbyDatabase {
 				+ "dest_url varchar(200) NOT NULL,"
 				+ "primary key(src, dest) )";
     	String insertDataToLinkTable = "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE " +
-    	"( 'APP', 'LINKS','data/links.csv',',',null,null,0 )";
+    	"( 'APP', 'LINKS','src/main/webapp/data/links.csv',',',null,null,0 )";
     	
     	Statement s = conn.createStatement();
+    	try {
+            s.executeUpdate("DROP TABLE APP.NODES");
+            s.executeUpdate("DROP TABLE APP.LINKS");
+        } catch (SQLException e) {
+            if (!e.getSQLState().equals("proper SQL-state for table does not exist"))
+                throw e;
+        }
     	s.execute(createNodeTable);
     	s.execute(insertDataToNodeTable);
     	s.execute(createLinkTable);
@@ -110,6 +116,7 @@ public class DerbyDatabase {
         try
         {
             stmt = conn.createStatement();
+            stmt.setMaxRows(max);
             ResultSet results = stmt.executeQuery(sql);
             ResultSetMetaData rsmd = results.getMetaData();
             int numberCols = rsmd.getColumnCount();
@@ -120,7 +127,7 @@ public class DerbyDatabase {
                     for (int i = 1; i <= numberCols; i++)
                     {
                         sbuf.append(results.getString(i));
-                        sbuf.append(", ");
+                        sbuf.append(";");
                     }
                 list.add(sbuf.toString());
             }

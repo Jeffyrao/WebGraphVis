@@ -17,20 +17,25 @@ public class GetLinksServlet extends HttpServlet implements Servlet {
             throws ServletException, IOException
     {
 		String id = request.getParameter("id");
-		if(id == null) id = "1";
-		request.getSession().setAttribute("id",id);
-		
 		String sql = "";
+		if(id == null) id = "-1";
+		
+		sql = "select * from APP.NODES where id='"+id+"'";
+		String[] node = DerbyDatabase.runQuery(conn, sql);
+		request.getSession().setAttribute("nodes",parseResults(node));
+		
+		
 		
 		//Get all outgoing links
-		sql = "select dest from APP.LINKS where src = '"+id+"'";
+		sql = "select APP.NODES.* from APP.LINKS JOIN APP.NODES on APP.LINKS.src = '"+id
+				+"' and APP.NODES.id = APP.LINKS.dest ORDER BY APP.NODES.pagerank DESC";
 		String[] outlinks = DerbyDatabase.runQuery(conn, sql);
-		request.getSession().setAttribute("outlinks",deleteComma(outlinks));
-		
+		request.getSession().setAttribute("outlinks",parseResults(outlinks));
 		//Get all incoming links
-		sql = "select src from APP.LINKS where dest = '"+id+"'";
+		sql =  "select APP.NODES.* from APP.LINKS JOIN APP.NODES on APP.LINKS.dest = '"+id
+				+"' and APP.NODES.id = APP.LINKS.src ORDER BY APP.NODES.pagerank DESC";
 		String[] inlinks = DerbyDatabase.runQuery(conn, sql);
-		request.getSession().setAttribute("inlinks",deleteComma(inlinks));
+		request.getSession().setAttribute("inlinks",parseResults(inlinks));
 		
 		getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
     }
@@ -41,10 +46,12 @@ public class GetLinksServlet extends HttpServlet implements Servlet {
         doPost(request,response);
     }
 	
-	protected String[] deleteComma(String[] input){
-		String[] output = new String[input.length];
+	protected Node[] parseResults(String[] input){
+		Node[] output = new Node[input.length];
 		for(int i=0; i< input.length; i++){
-			output[i] = input[i].replace(',', ' ').trim();
+			String[] attr = input[i].split(";");
+			output[i] = new Node(attr[0].trim(), attr[1].trim(), attr[2].trim(), attr[3].trim(),
+					attr[4].trim(), attr[5].trim(), attr[6].trim(), attr[7].trim());
 		}
 		return output;
 	}
