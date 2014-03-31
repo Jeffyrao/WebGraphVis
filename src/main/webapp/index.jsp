@@ -164,7 +164,6 @@ function update(){
 			</c:forEach>
 	};
 	if(!isEmpty(curr_node) && openflag){
-		console.log(curr_node);
 		createDialog(curr_node);
 	}
 	
@@ -191,19 +190,33 @@ function update(){
     function click(d,e) {
       $.ajax({  
     	    type: "POST",  
-    	    url: "LinkServlet",  
+    	    url: "ClickServlet",  
     	    data: "id="+d.id,  
-    	    success: function(result){ 
-    	    	//var json = $.parseJSON(result);
-    	    	$('body').html(result);
+    	    success: function(data){ 
+    	    	uri = './images/' + d.name.replace(',','') +".png";
+    	    	var content = setContent(d);
+    	  		content = setLinksViaJSONData(d,content,data);
+    	        var popup = document.getElementById("contents")
+    	        popup.innerHTML = content;
+    	    
+    	        $('#contents').attr("title",setTitle(d))
+    	        .css({"font-size": +14+"px"})
+    	        .dialog({
+    	            width:'auto',
+    	            height:500,
+    	            modal: true,
+    	            open: function(event, ui){
+    	               $('#image').attr('src',uri);
+    	            }
+    	        });
     	    }  
       });  
     }
 	
     function createDialog(d){
     	uri = './images/' + d.name.replace(',','') +".png";
-    	console.log("create dialog");
   		var content = setContent(d);
+  		content = setLinksViaRequestData(d,content);
         var popup = document.getElementById("contents")
         popup.innerHTML = content;
     
@@ -237,7 +250,11 @@ function update(){
         if(d.state && d.state !== "null"){content += "<br\><b>State: </b>" + d.state; }
         if(d.district && d.district !== "null"){content += "<br\><b> District: </b>" + d.district; }
         content += "<br\><b> Homepage: </b>" + d.url; 
-        content += "<br\><br\><b> Outgoing Links: </b>";
+  		return content;
+    }
+    
+    function setLinksViaRequestData(d, content){
+    	content += "<br\><br\><b> Outgoing Links: </b>";
         content += "<ul><c:forEach items='${outlinks}' var='outlink'>"
         			+"<li><a id='link' href='/LinkServlet?id=${ outlink.id }'>"
   				+"<c:out value='${outlink.name}'></c:out>"
@@ -247,6 +264,25 @@ function update(){
         			+"<li><a id='link' href='/LinkServlet?id=${ inlink.id }'>"
   				+"<c:out value='${inlink.name}'></c:out>"
   				+"</a></li></c:forEach></ul>";
+  		return content
+    }
+    
+    function setLinksViaJSONData(d, content, jsondata){
+    	content += "<br\><br\><b> Outgoing Links: </b> <ul>";
+        for(var i=0; i<jsondata.outlinks.length; i++){
+        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.outlinks[i].id+"'>"
+        			+ jsondata.outlinks[i].name
+        			+ "</a></li>";
+        }
+		content += "</ul>"
+				+ "<b> Incoming Links: </b>"
+				+ "<ul>";
+		for(var i=0; i<jsondata.inlinks.length; i++){
+        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.inlinks[i].id+"'>"
+        			+ jsondata.inlinks[i].name
+        			+ "</a></li>";
+        }
+        content +="</ul>";
   		return content;
     }
     
