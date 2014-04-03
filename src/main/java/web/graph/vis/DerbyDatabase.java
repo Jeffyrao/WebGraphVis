@@ -116,7 +116,6 @@ public class DerbyDatabase {
         try
         {
             stmt = conn.createStatement();
-            stmt.setMaxRows(max);
             ResultSet results = stmt.executeQuery(sql);
             ResultSetMetaData rsmd = results.getMetaData();
             int numberCols = rsmd.getColumnCount();

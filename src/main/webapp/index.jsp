@@ -179,10 +179,14 @@ function update(){
                 return o.source === d || o.target === d ? 1 : opacity;
             }).style("stroke-width", function(o) {
                 if (o.source ===d){ return 1;}
-                else if(o.target ===d){ return 2;}
+                else if(o.target ===d){ return 1;}
             }).style("stroke", function(o) {
-                if (o.source ===d){ return "grey";}
-                else if(o.target ===d){ return "green";}
+            	if( isOutgoing(o.source, o.target) && isIncoming(o.source, o.target)
+            			&& (o.source ===d || o.target===d)){
+            		return opacity===1?"grey":"red";
+            	}
+            	else if (o.source ===d){ return "grey";}
+                else if(o.target ===d){ return opacity===1?"grey":"green";}
             });
         };
     }
@@ -191,23 +195,23 @@ function update(){
       $.ajax({  
     	    type: "POST",  
     	    url: "ClickServlet",  
-    	    data: "id="+d.id,  
+    	    data: "id="+d.id+"&url="+d.url,  
     	    success: function(data){ 
+    	    	console.log(data);
     	    	uri = './images/' + d.name.replace(',','') +".png";
     	    	var content = setContent(d);
     	  		content = setLinksViaJSONData(d,content,data);
     	        var popup = document.getElementById("contents")
     	        popup.innerHTML = content;
-    	    
-    	        $('#contents').attr("title",setTitle(d))
+    	    	
+    	        $('#image').attr('src',uri);
+    	        $('#contents')//.attr("title",setTitle(d))
     	        .css({"font-size": +14+"px"})
     	        .dialog({
     	            width:'auto',
     	            height:500,
-    	            modal: true,
-    	            open: function(event, ui){
-    	               $('#image').attr('src',uri);
-    	            }
+    	            //modal: true,
+    	            open: function(event, ui){}
     	        });
     	    }  
       });  
@@ -219,16 +223,15 @@ function update(){
   		content = setLinksViaRequestData(d,content);
         var popup = document.getElementById("contents")
         popup.innerHTML = content;
-    
-        $('#contents').attr("title",setTitle(d))
+    	
+        $('#image').attr('src',uri);
+        $('#contents')//.attr("title",setTitle(d))
         .css({"font-size": +14+"px"})
         .dialog({
             width:'auto',
             height:500,
-            modal: true,
-            open: function(event, ui){
-               $('#image').attr('src',uri);
-            }
+            //modal: true,
+            open: function(event, ui){  }
         });
     }
     
@@ -249,28 +252,30 @@ function update(){
         }
         if(d.state && d.state !== "null"){content += "<br\><b>State: </b>" + d.state; }
         if(d.district && d.district !== "null"){content += "<br\><b> District: </b>" + d.district; }
-        content += "<br\><b> Homepage: </b>" + d.url; 
   		return content;
     }
     
     function setLinksViaRequestData(d, content){
+    	content += "<br\><b> Homepage: </b><a target='_blank' href='${href}'>" + d.url + "</a>"; 
     	content += "<br\><br\><b> Outgoing Links: </b>";
         content += "<ul><c:forEach items='${outlinks}' var='outlink'>"
-        			+"<li><a id='link' href='/LinkServlet?id=${ outlink.id }'>"
+        			+"<li><a id='link' href='/LinkServlet?id=${ outlink.id }&url=${outlink.url}'>"
   				+"<c:out value='${outlink.name}'></c:out>"
   				+"</a></li></c:forEach></ul>";
 		content += "<b> Incoming Links: </b>";
         content += "<ul><c:forEach items='${inlinks}' var='inlink'>"
-        			+"<li><a id='link' href='/LinkServlet?id=${ inlink.id }'>"
+        			+"<li><a id='link' href='/LinkServlet?id=${ inlink.id }&url=${inlink.url}'>"
   				+"<c:out value='${inlink.name}'></c:out>"
   				+"</a></li></c:forEach></ul>";
   		return content
     }
     
     function setLinksViaJSONData(d, content, jsondata){
+    	content += "<br\><b> Homepage: </b><a target='_blank' href='"+jsondata.href+"'>" + d.url + "</a>"; 
     	content += "<br\><br\><b> Outgoing Links: </b> <ul>";
         for(var i=0; i<jsondata.outlinks.length; i++){
-        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.outlinks[i].id+"'>"
+        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.outlinks[i].id
+        			+"&url="+jsondata.outlinks[i].url+"'>"
         			+ jsondata.outlinks[i].name
         			+ "</a></li>";
         }
@@ -278,7 +283,8 @@ function update(){
 				+ "<b> Incoming Links: </b>"
 				+ "<ul>";
 		for(var i=0; i<jsondata.inlinks.length; i++){
-        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.inlinks[i].id+"'>"
+        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.inlinks[i].id
+        			+"&url="+jsondata.inlinks[i].url+"'>"
         			+ jsondata.inlinks[i].name
         			+ "</a></li>";
         }

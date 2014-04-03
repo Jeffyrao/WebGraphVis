@@ -11,15 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 public class ClickServlet extends HttpServlet implements Servlet {
 	
 	public static Connection conn = DerbyDatabase.getConnInstance();
+	public static String server = "http://tibanna.umiacs.umd.edu:9191/c108"; 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
 		String id = request.getParameter("id");
+		String url = request.getParameter("url");
 		String sql = "";
 		if(id == null) id = "-1";
 		
@@ -38,6 +43,14 @@ public class ClickServlet extends HttpServlet implements Servlet {
 				+"' and APP.NODES.id = APP.LINKS.src ORDER BY APP.NODES.pagerank DESC";
 		String[] inlinks = DerbyDatabase.runQuery(conn, sql);
 		returnObject.put("inlinks",parseResults(inlinks));
+		
+		Document doc = Jsoup.connect(server+"?query="+url).get();
+		Element link = doc.select("a[href]").first();
+		String linkHref = link.attr("href");
+		if(linkHref.equals(server)){
+			linkHref = server+url;
+		}
+		returnObject.put("href", linkHref);
 		
 		response.setContentType("application/json");
 		response.getWriter().write(returnObject.toString());
