@@ -50,7 +50,8 @@ var width = 1600,
     graph = {};
 
 var link,
-	node;
+	node,
+	clicknode;
 
 var radius = d3.scale.linear()
             .range([5,15]);
@@ -92,7 +93,7 @@ d3.csv("./data/nodes.csv", function(d){
 
 function ClickLink(id){
 	node.filter(function(d){return d.id===id})
-	.each(click);
+	.each(update.click);
 }
 
 $(document).ready(function() {
@@ -106,24 +107,6 @@ function update(){
       .links(graph.links)
       .start();
 
-    var linkedByIndex = {};
-    graph.links.forEach(function(d) {
-        linkedByIndex[d.source.index + "," + d.target.index] = 1;
-    });
-
-    function isConnected(a, b) {
-        return linkedByIndex[a.index + "," + b.index] 
-        || linkedByIndex[b.index + "," + a.index] 
-        || a.index == b.index;
-    }
-
-    function isOutgoing(a, b){
-       return linkedByIndex[a.index + "," + b.index]; 
-    }
-
-    function isIncoming(a, b){
-      return linkedByIndex[b.index + "," + a.index];
-    }
 
     link = svg.selectAll(".link")
         .data(graph.links)
@@ -137,6 +120,7 @@ function update(){
       .enter().append("circle")
       .filter(function(d){return d !== null;})
         .attr("class", "node")
+        .attr("id", function(d){ return "node"+d.id;})
         .attr("r", function(d){ return radius(d.pagerank); })
         .style("fill", function(d) { 
            if( d.party == "R" && d.committee =="H") { return "red"; }
@@ -147,7 +131,7 @@ function update(){
         ;})
         .call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1))
         .on("click", click);
-
+    
     node.append("title")
         .text(function(d) { return d.url; });
 	
@@ -162,7 +146,7 @@ function update(){
       node.attr("cx", function(d) { return d.x; })
           .attr("cy", function(d) { return d.y; });
     });
-  	var openflag = true;
+  	/*var openflag = true;
 	var curr_node = {
 			<c:forEach items="${nodes}" var="node">
 				id: "${node.id}",
@@ -177,8 +161,28 @@ function update(){
 	};
 	if(!isEmpty(curr_node) && openflag){
 		createDialog(curr_node);
+	}*/
+	
+	var linkedByIndex = {};
+
+	graph.links.forEach(function(d) {
+	    linkedByIndex[d.source.index + "," + d.target.index] = 1;
+	});
+
+	function isConnected(a, b) {
+	    return linkedByIndex[a.index + "," + b.index] 
+	    || linkedByIndex[b.index + "," + a.index] 
+	    || a.index == b.index;
 	}
 
+	function isOutgoing(a, b){
+	   return linkedByIndex[a.index + "," + b.index]; 
+	}
+
+	function isIncoming(a, b){
+	  return linkedByIndex[b.index + "," + a.index];
+	}
+	
 	function fade(opacity) {
         return function(d) {
             node.style("stroke-opacity", function(o) {
@@ -202,14 +206,17 @@ function update(){
             });
         };
     }
-}
+	
+	
   function click(d,e) {
     $.ajax({  
   	    type: "POST",  
   	    url: "ClickServlet",  
   	    data: "id="+d.id+"&url="+d.url,  
   	    success: function(data){ 
-  	    	console.log(data);
+  	    	node.filter(function(n){return n===d})
+  	  		.each(fade(0.1));
+  	    	clicknode = d;
   	    	uri = './images/' + d.name.replace(',','') +".png";
   	    	var content = setContent(d);
   	  		content = setLinksViaJSONData(d,content,data);
@@ -220,16 +227,22 @@ function update(){
   	        $('#contents')//.attr("title",setTitle(d))
   	        .css({"font-size": +14+"px"})
   	        .dialog({
-  	            width:'auto',
-  	            height:500,
-  	            //modal: true,
-  	            open: function(event, ui){}
+  	          width:'auto',
+  	          height:500,
+  	          open: function(event, ui){
+  	        	node.call(force.drag).on("mouseover", null).on("mouseout", null);
+  	          },
+  	      	  close: function(event, ui){
+  	      		node.call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));
+  	      	  }
   	        });
   	    }  
     });  
   }
-
-  function createDialog(d){
+  update.click = click;
+}
+  
+  /*function createDialog(d){
   	uri = './images/' + d.name.replace(',','') +".png";
 		var content = setContent(d);
 		content = setLinksViaRequestData(d,content);
@@ -243,9 +256,14 @@ function update(){
           width:'auto',
           height:500,
           //modal: true,
-          open: function(event, ui){  }
+          open: function(event, ui){
+	        	node.call(force.drag).on("mouseover", fade(.1)).on("mouseout", null);
+	          },
+	      	  close: function(event, ui){
+	      		node.call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));
+	     	}
       });
-  }
+  }*/
   
   function setContent(d){
   	var content = "";
@@ -267,7 +285,7 @@ function update(){
 		return content;
   }
   
-  function setLinksViaRequestData(d, content){
+  /*function setLinksViaRequestData(d, content){
   	content += "<br\><b> Homepage: </b><a target='_blank' href='${href}'>" + d.url + "</a>"; 
   	content += "<br\><br\><b> Outgoing Links: </b>";
       content += "<ul><c:forEach items='${outlinks}' var='outlink'>"
@@ -282,7 +300,7 @@ function update(){
 				+"<c:out value='${inlink.name}'></c:out>"
 				+"</a></li></c:forEach></ul>";
 		return content
-  }
+  }*/
   
   function setLinksViaJSONData(d, content, jsondata){
   	content += "<br\><b> Homepage: </b><a target='_blank' href='"+jsondata.href+"'>" + d.url + "</a>"; 
