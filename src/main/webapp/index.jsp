@@ -28,16 +28,10 @@
     margin:0px;
     padding:0px;
 }
-
-#contents2 { 
-    position:absolute;
-    background-color:#fff;
-    border-radius:15px;
-    color:#000;
-    display:none; 
-    padding:20px;
-    min-width:250px;
-    min-height: 200px;
+#btnSubmit{
+	position:absolute;
+	top:20px;
+	right:5px;
 }
 #myIframe{
   height: 580px;
@@ -48,11 +42,15 @@
 <div id="contents" style="display:none">
   <img id="image" src="" />
 </div>
+<input id = "btnSubmit" type="submit" value="Stop"/>
 <script>
 
 var width = 1600,
     height = 1400,
     graph = {};
+
+var link,
+	node;
 
 var radius = d3.scale.linear()
             .range([5,15]);
@@ -64,6 +62,7 @@ var force = d3.layout.force()
 
 var svg = d3.select("body").append("svg")
     .attr("height", height).attr("width", width);
+
 
 d3.csv("./data/nodes.csv", function(d){
   return {
@@ -91,6 +90,17 @@ d3.csv("./data/nodes.csv", function(d){
   });
 });
 
+function ClickLink(id){
+	node.filter(function(d){return d.id===id})
+	.each(click);
+}
+
+$(document).ready(function() {
+    $("#btnSubmit").click(function(){
+        force.stop();
+    }); 
+});
+
 function update(){
     force.nodes(graph.nodes)
       .links(graph.links)
@@ -115,14 +125,14 @@ function update(){
       return linkedByIndex[b.index + "," + a.index];
     }
 
-    var link = svg.selectAll(".link")
+    link = svg.selectAll(".link")
         .data(graph.links)
       .enter().append("line")
       .filter(function(d){return d !== null;})
         .attr("class", "link")
         .style("stroke-width", 1);
 
-    var node = svg.selectAll(".node")
+    node = svg.selectAll(".node")
         .data(graph.nodes)
       .enter().append("circle")
       .filter(function(d){return d !== null;})
@@ -140,7 +150,9 @@ function update(){
 
     node.append("title")
         .text(function(d) { return d.url; });
-
+	
+    
+    
     force.on("tick", function() {
       link.attr("x1", function(d) { return d.source.x; })
           .attr("y1", function(d) { return d.source.y; })
@@ -166,7 +178,7 @@ function update(){
 	if(!isEmpty(curr_node) && openflag){
 		createDialog(curr_node);
 	}
-	
+
 	function fade(opacity) {
         return function(d) {
             node.style("stroke-opacity", function(o) {
@@ -190,146 +202,150 @@ function update(){
             });
         };
     }
-
-    function click(d,e) {
-      $.ajax({  
-    	    type: "POST",  
-    	    url: "ClickServlet",  
-    	    data: "id="+d.id+"&url="+d.url,  
-    	    success: function(data){ 
-    	    	console.log(data);
-    	    	uri = './images/' + d.name.replace(',','') +".png";
-    	    	var content = setContent(d);
-    	  		content = setLinksViaJSONData(d,content,data);
-    	        var popup = document.getElementById("contents")
-    	        popup.innerHTML = content;
-    	    	
-    	        $('#image').attr('src',uri);
-    	        $('#contents')//.attr("title",setTitle(d))
-    	        .css({"font-size": +14+"px"})
-    	        .dialog({
-    	            width:'auto',
-    	            height:500,
-    	            //modal: true,
-    	            open: function(event, ui){}
-    	        });
-    	    }  
-      });  
-    }
-	
-    function createDialog(d){
-    	uri = './images/' + d.name.replace(',','') +".png";
-  		var content = setContent(d);
-  		content = setLinksViaRequestData(d,content);
-        var popup = document.getElementById("contents")
-        popup.innerHTML = content;
-    	
-        $('#image').attr('src',uri);
-        $('#contents')//.attr("title",setTitle(d))
-        .css({"font-size": +14+"px"})
-        .dialog({
-            width:'auto',
-            height:500,
-            //modal: true,
-            open: function(event, ui){  }
-        });
-    }
-    
-    function setContent(d){
-    	var content = "";
-        if(d.party ==='D' || d.party==='R'){
-          content = "<img id='image' src='' /><br\>";
-        }
-        content += "<b> Name: </b>"+d.name;
-        title = "Committee";
-        if(d.party === 'D'){ 
-            content += "<br\> <b> Party: </b>" + "Democratic";
-            title = "Democratic Member";
-        }
-        else if (d.party === 'R'){ 
-            content += "<br\> <b> Party: </b>" + "Republican"; 
-            title = "Republican Member"
-        }
-        if(d.state && d.state !== "null"){content += "<br\><b>State: </b>" + d.state; }
-        if(d.district && d.district !== "null"){content += "<br\><b> District: </b>" + d.district; }
-  		return content;
-    }
-    
-    function setLinksViaRequestData(d, content){
-    	content += "<br\><b> Homepage: </b><a target='_blank' href='${href}'>" + d.url + "</a>"; 
-    	content += "<br\><br\><b> Outgoing Links: </b>";
-        content += "<ul><c:forEach items='${outlinks}' var='outlink'>"
-        			+"<li><a id='link' href='/LinkServlet?id=${ outlink.id }&url=${outlink.url}'>"
-  				+"<c:out value='${outlink.name}'></c:out>"
-  				+"</a></li></c:forEach></ul>";
-		content += "<b> Incoming Links: </b>";
-        content += "<ul><c:forEach items='${inlinks}' var='inlink'>"
-        			+"<li><a id='link' href='/LinkServlet?id=${ inlink.id }&url=${inlink.url}'>"
-  				+"<c:out value='${inlink.name}'></c:out>"
-  				+"</a></li></c:forEach></ul>";
-  		return content
-    }
-    
-    function setLinksViaJSONData(d, content, jsondata){
-    	content += "<br\><b> Homepage: </b><a target='_blank' href='"+jsondata.href+"'>" + d.url + "</a>"; 
-    	content += "<br\><br\><b> Outgoing Links: </b> <ul>";
-        for(var i=0; i<jsondata.outlinks.length; i++){
-        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.outlinks[i].id
-        			+"&url="+jsondata.outlinks[i].url+"'>"
-        			+ jsondata.outlinks[i].name
-        			+ "</a></li>";
-        }
-		content += "</ul>"
-				+ "<b> Incoming Links: </b>"
-				+ "<ul>";
-		for(var i=0; i<jsondata.inlinks.length; i++){
-        	content += "<li><a id='link' href='/LinkServlet?id="+jsondata.inlinks[i].id
-        			+"&url="+jsondata.inlinks[i].url+"'>"
-        			+ jsondata.inlinks[i].name
-        			+ "</a></li>";
-        }
-        content +="</ul>";
-  		return content;
-    }
-    
-    function setTitle(d){
-    	title = "Committee";
-        if(d.party === 'D'){ 
-            title = "Democratic Member";
-        }
-        else if (d.party === 'R'){ 
-            title = "Republican Member"
-        }
-        return title;
-    }
-    
-    function ImageExist(url) 
-    {
-        var img = new Image();
-        img.src = url;
-        console.log(url+" "+img.height);
-        return img.height != 0;
-    }
-    
-    function isEmpty(obj) {
-    	var hasOwnProperty = Object.prototype.hasOwnProperty;
-        // null and undefined are "empty"
-        if (obj == null) return true;
-
-        // Assume if it has a length property with a non-zero value
-        // that that property is correct.
-        if (obj.length > 0)    return false;
-        if (obj.length === 0)  return true;
-
-        // Otherwise, does it have any properties of its own?
-        // Note that this doesn't handle
-        // toString and valueOf enumeration bugs in IE < 9
-        for (var key in obj) {
-            if (hasOwnProperty.call(obj, key)) return false;
-        }
-
-        return true;
-    }
+}
+  function click(d,e) {
+    $.ajax({  
+  	    type: "POST",  
+  	    url: "ClickServlet",  
+  	    data: "id="+d.id+"&url="+d.url,  
+  	    success: function(data){ 
+  	    	console.log(data);
+  	    	uri = './images/' + d.name.replace(',','') +".png";
+  	    	var content = setContent(d);
+  	  		content = setLinksViaJSONData(d,content,data);
+  	        var popup = document.getElementById("contents")
+  	        popup.innerHTML = content;
+  	    	
+  	        $('#image').attr('src',uri);
+  	        $('#contents')//.attr("title",setTitle(d))
+  	        .css({"font-size": +14+"px"})
+  	        .dialog({
+  	            width:'auto',
+  	            height:500,
+  	            //modal: true,
+  	            open: function(event, ui){}
+  	        });
+  	    }  
+    });  
   }
+
+  function createDialog(d){
+  	uri = './images/' + d.name.replace(',','') +".png";
+		var content = setContent(d);
+		content = setLinksViaRequestData(d,content);
+      var popup = document.getElementById("contents")
+      popup.innerHTML = content;
+  	
+      $('#image').attr('src',uri);
+      $('#contents')//.attr("title",setTitle(d))
+      .css({"font-size": +14+"px"})
+      .dialog({
+          width:'auto',
+          height:500,
+          //modal: true,
+          open: function(event, ui){  }
+      });
+  }
+  
+  function setContent(d){
+  	var content = "";
+      if(d.party ==='D' || d.party==='R'){
+        content = "<img id='image' src='' /><br\>";
+      }
+      content += "<b> Name: </b>"+d.name;
+      title = "Committee";
+      if(d.party === 'D'){ 
+          content += "<br\> <b> Party: </b>" + "Democratic";
+          title = "Democratic Member";
+      }
+      else if (d.party === 'R'){ 
+          content += "<br\> <b> Party: </b>" + "Republican"; 
+          title = "Republican Member"
+      }
+      if(d.state && d.state !== "null"){content += "<br\><b>State: </b>" + d.state; }
+      if(d.district && d.district !== "null"){content += "<br\><b> District: </b>" + d.district; }
+		return content;
+  }
+  
+  function setLinksViaRequestData(d, content){
+  	content += "<br\><b> Homepage: </b><a target='_blank' href='${href}'>" + d.url + "</a>"; 
+  	content += "<br\><br\><b> Outgoing Links: </b>";
+      content += "<ul><c:forEach items='${outlinks}' var='outlink'>"
+      			//+"<li><a id='link' href='/LinkServlet?id=${ outlink.id }&url=${outlink.url}'>"
+      			+"<li><a class='link' href='#' id='${outlink.id}'>"
+				+"<c:out value='${outlink.name}'></c:out>"
+				+"</a></li></c:forEach></ul>";
+	content += "<b> Incoming Links: </b>";
+      content += "<ul><c:forEach items='${inlinks}' var='inlink'>"
+      			//+"<li><a id='link' href='/LinkServlet?id=${ inlink.id }&url=${inlink.url}'>"
+      			+"<li><a class='link' href='#' id='${inlink.id}'>"
+				+"<c:out value='${inlink.name}'></c:out>"
+				+"</a></li></c:forEach></ul>";
+		return content
+  }
+  
+  function setLinksViaJSONData(d, content, jsondata){
+  	content += "<br\><b> Homepage: </b><a target='_blank' href='"+jsondata.href+"'>" + d.url + "</a>"; 
+  	content += "<br\><br\><b> Outgoing Links: </b> <ul>";
+      for(var i=0; i<jsondata.outlinks.length; i++){
+      	content += //"<li><a id='link' href='/LinkServlet?id="+jsondata.outlinks[i].id
+      			//+"&url="+jsondata.outlinks[i].url+"'>"
+      			"<li><a class='linkElement' onclick='ClickLink("+jsondata.outlinks[i].id+")' href='#' id='"+jsondata.outlinks[i].id+"'>"
+      			+ jsondata.outlinks[i].name
+      			+ "</a></li>";
+      }
+	content += "</ul>"
+			+ "<b> Incoming Links: </b>"
+			+ "<ul>";
+	for(var i=0; i<jsondata.inlinks.length; i++){
+	      	content += //"<li><a id='link' href='/LinkServlet?id="+jsondata.inlinks[i].id
+	      			//+"&url="+jsondata.inlinks[i].url+"'>"
+	      			"<li><a class='linkElement' onclick='ClickLink("+jsondata.inlinks[i].id+")' href='#' id='"+jsondata.inlinks[i].id+"'>"
+	      			+ jsondata.inlinks[i].name
+	      			+ "</a></li>";
+	      }
+	      content +="</ul>";
+			return content;
+	  }
+  
+  function setTitle(d){
+  	title = "Committee";
+      if(d.party === 'D'){ 
+          title = "Democratic Member";
+      }
+      else if (d.party === 'R'){ 
+          title = "Republican Member"
+      }
+      return title;
+  }
+  
+  function ImageExist(url) 
+  {
+      var img = new Image();
+      img.src = url;
+      console.log(url+" "+img.height);
+      return img.height != 0;
+  }
+  
+  function isEmpty(obj) {
+  	var hasOwnProperty = Object.prototype.hasOwnProperty;
+      // null and undefined are "empty"
+      if (obj == null) return true;
+
+      // Assume if it has a length property with a non-zero value
+      // that that property is correct.
+      if (obj.length > 0)    return false;
+      if (obj.length === 0)  return true;
+
+      // Otherwise, does it have any properties of its own?
+      // Note that this doesn't handle
+      // toString and valueOf enumeration bugs in IE < 9
+      for (var key in obj) {
+          if (hasOwnProperty.call(obj, key)) return false;
+      }
+
+      return true;
+  }
+  
 
 </script>
