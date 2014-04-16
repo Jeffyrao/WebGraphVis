@@ -41,7 +41,7 @@ var chord = d3.layout.chord()
     .padding(.02)
     .sortSubgroups(d3.descending)
 
-var w = 980, h = 800, r1 = h / 2, r0 = r1 - 110;
+var w = 1280, h = 1200, r1 = h / 2, r0 = r1 - 110;
 
 var arc = d3.svg.arc()
 .innerRadius(r0)
@@ -132,7 +132,7 @@ d3.csv("./data/nodes.csv", function(error, nodes){
     			   else
     				   return d.source.index != sid || d.target.index != tid;})
     		   .transition()
-    		   .style("opacity", 0.1);
+    		   .style("opacity", 0);
     	  }
     	  
     	  function mouseout(d, i){
