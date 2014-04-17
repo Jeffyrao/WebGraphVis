@@ -15,9 +15,9 @@ public class BuildMatrix {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		String nodeDir = "src/main/webapp/data/nodes.csv";
-		String linkDir = "src/main/webapp/data/links.csv";
-		String matrixDir = "src/main/webapp/data/matrix.json";
+		String nodeDir = "src/main/webapp/data/prefix.csv";
+		String linkDir = "src/main/webapp/data/sitelinks.csv";
+		String matrixDir = "src/main/webapp/data/sitematrix.json";
 		
 		// Get number of nodes
 		int numOfNodes = 0;

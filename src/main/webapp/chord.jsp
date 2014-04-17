@@ -41,7 +41,7 @@ var chord = d3.layout.chord()
     .padding(.02)
     .sortSubgroups(d3.descending)
 
-var w = 1280, h = 1200, r1 = h / 2, r0 = r1 - 110;
+var w = 980, h = 800, r1 = h / 2, r0 = r1 - 110;
 
 var arc = d3.svg.arc()
 .innerRadius(r0)
@@ -53,8 +53,8 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
     
-d3.csv("./data/nodes.csv", function(error, nodes){
-		d3.json("./data/matrix.json", function(error,matrix) {
+d3.csv("./data/prefix.csv", function(error, nodes){
+		d3.json("./data/sitematrix.json", function(error,matrix) {
 	     chord.matrix(matrix);
 	     
 	    var g = svg.selectAll("g.group")
@@ -96,15 +96,15 @@ d3.csv("./data/nodes.csv", function(error, nodes){
     	    var p = d3.format(".1%"), q = d3.format(",.2r")
     	    return "Chord Info:<br/>"
     	      +  nodes[d.source.index].name + " -> " + nodes[d.target.index].name
-    	      + ": " + nodes[d.source.index].pagerank + "<br/>"
+    	      + ": " + nodes[d.source.index].id + "<br/>"
     	      + nodes[d.target.index].name + " -> " + nodes[d.source.index].name
-    	      + ": " + nodes[d.target.index].pagerank + "<br/>";
+    	      + ": " + nodes[d.target.index].id + "<br/>";
     	  }
 
     	  function groupTip (d) {
     	    var p = d3.format(".1%"), q = d3.format(",.2r")
     	    return "Group Info:<br/>"
-    	        + nodes[d.index].name + " : " + nodes[d.index].pagerank + "<br/>";
+    	        + nodes[d.index].name + " : " + nodes[d.index].id + "<br/>";
     	    }
 
     	  function mouseover(d) {
