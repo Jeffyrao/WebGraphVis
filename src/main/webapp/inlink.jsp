@@ -36,9 +36,10 @@
 <script>
 
 var graph = {};
+var pad = 0.02
 
 var chord = d3.layout.chord()
-    .padding(.02)
+	.padding(pad)
     .sortSubgroups(d3.descending)
 
 var w = 980, h = 800, r1 = h / 2, r0 = r1 - 110;
@@ -54,10 +55,50 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
     
 d3.csv("./data/prefix.csv", function(error, nodes){
-		console.log(nodes);
-		d3.json("./data/sitematrix.json", function(error,matrix) {
+		d3.json("./data/inlink_matrix.json", function(error,matrix) {
+		 var sum=0, prev_angle=0;
 	     chord.matrix(matrix);
+	     chord.groups()
+	     .forEach(function(d){
+	    	 d.sum = d.value;
+	    	 d.value = log10(d.value+1)+1;
+	    	 sum += d.value;
+	     });
+	     chord.groups()
+	     .forEach(function(d){
+	    	 d.startAngle = prev_angle;
+	    	 d.endAngle = d.startAngle + 2*Math.PI*d.value/sum ;
+	    	 d.angle = d.endAngle - d.startAngle;
+	    	 prev_angle = d.endAngle + pad/nodes.length;
+	     });
+	     var groups = chord.groups();
+	     var chords_mat = new Array(nodes.length);
+	     for(var i=0; i<nodes.length; i++){
+	    	 chords_mat[i] = new Array(nodes.length);
+	    	 var start_angle = groups[i].startAngle;
+	    	 for( var j=0; j<nodes.length; j++){
+	    		 chords_mat[i][j]={};
+	    		 if(matrix[i][j]!==0){
+	    			 chords_mat[i][j].startAngle = start_angle;
+	    			 chords_mat[i][j].endAngle = start_angle + 
+	    			 	matrix[i][j]*(groups[i].endAngle-groups[i].startAngle)/groups[i].sum;
+	    			 start_angle = chords_mat[i][j].endAngle;
+	    		 }else{
+	    			 chords_mat[i][j].startAngle = groups[i].endAngle;
+	    			 chords_mat[i][j].endAngle = groups[i].endAngle;
+	    		 }
+	    	 }
+	     }
 	     
+	     chord.chords()
+	     .forEach(function(d){
+	    	 d.source.startAngle = chords_mat[d.source.index][d.source.subindex].startAngle;
+	    	 d.source.endAngle = chords_mat[d.source.index][d.source.subindex].endAngle;
+	    	 d.target.startAngle = chords_mat[d.target.index][d.target.subindex].startAngle;
+	    	 d.target.endAngle = chords_mat[d.target.index][d.target.subindex].endAngle;
+	     })
+	     console.log(chord.groups());
+	     console.log(chord.chords());
 	    var g = svg.selectAll("g.group")
          .data(chord.groups())
        	 .enter().append("svg:g")
@@ -149,6 +190,10 @@ d3.csv("./data/prefix.csv", function(error, nodes){
     		  if( d.party === "R") { return "red"; }
     		  else if(d.party === "D"){return "blue";}
     	      else {return "grey";}
+    	  }
+    	  
+    	  function log10(val) {
+    		  return Math.log(val) / Math.LN10;
     	  }
 	  });
 	});
