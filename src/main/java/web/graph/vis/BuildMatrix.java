@@ -79,15 +79,15 @@ public class BuildMatrix {
 					}
 				}
 				if(links.containsKey(numOfNodes)){
-					writer.write(links.get(numOfNodes)+"]\n");
+					writer.write(links.get(numOfNodes)+"],\n");
 				}else{
-					writer.write("0]\n");
+					writer.write("0],\n");
 				}
 			}else{
 				for(int j=1; j<numOfNodes; j++){
 					writer.write("0,");
 				}
-				writer.write("0]\n");
+				writer.write("0],\n");
 			}
 		}
 		writer.write("]");
