@@ -54,6 +54,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
     
 d3.csv("./data/prefix.csv", function(error, nodes){
+		console.log(nodes);
 		d3.json("./data/sitematrix.json", function(error,matrix) {
 	     chord.matrix(matrix);
 	     
@@ -74,13 +75,14 @@ d3.csv("./data/prefix.csv", function(error, nodes){
          .attr("dy", ".35em")
          .style("font-family", "helvetica, arial, sans-serif")
          .style("font-size", "9px")
+         .style("color", function(d){ return color(nodes[d.index]); })
          .attr("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
          .attr("transform", function(d) {
            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
                + "translate(" + (r0 + 26) + ")"
                + (d.angle > Math.PI ? "rotate(180)" : "");
          })
-         .text(function(d) { return nodes[d.index].name; });
+         .text(function(d) { return nodes.filter(function(n){ return parseInt(n.id) ===d.index+1; })[0].name; });
 
        var chordPaths = svg.selectAll("path.chord")
              .data(chord.chords())
@@ -93,22 +95,23 @@ d3.csv("./data/prefix.csv", function(error, nodes){
              .on("mouseout", mouseout);
 		
        function chordTip (d) {
-    	    var p = d3.format(".1%"), q = d3.format(",.2r")
+    	    var source = nodes.filter(function(n){ return parseInt(n.id) ===d.source.index+1; });
+    	    var target = nodes.filter(function(n){ return parseInt(n.id) ===d.target.index+1; });
     	    return "Chord Info:<br/>"
-    	      +  nodes[d.source.index].name + " -> " + nodes[d.target.index].name
-    	      + ": " + nodes[d.source.index].id + "<br/>"
-    	      + nodes[d.target.index].name + " -> " + nodes[d.source.index].name
-    	      + ": " + nodes[d.target.index].id + "<br/>";
+    	      +  source[0].name + " -> " + target[0].name
+    	      + ": " + d.source.value + "<br/>"
+    	      + target[0].name + " -> " + source[0].name
+    	      + ": " + d.target.value + "<br/>";
     	  }
 
     	  function groupTip (d) {
-    	    var p = d3.format(".1%"), q = d3.format(",.2r")
+    		  
+    	    var node = nodes.filter(function(n){ return parseInt(n.id) ===d.index+1; });
     	    return "Group Info:<br/>"
-    	        + nodes[d.index].name + " : " + nodes[d.index].id + "<br/>";
+    	        + node[0].name + " : " + node[0].url + "<br/>";
     	    }
 
     	  function mouseover(d) {
-    		
     		var sid, tid, tip;
     		if(d.source){
     			sid = d.source.index;
@@ -143,10 +146,8 @@ d3.csv("./data/prefix.csv", function(error, nodes){
     	  }
     	  
     	  function color(d){
-    		  if( d.party == "R" && d.committee =="H") { return "red"; }
-    	      else if(d.party == "R" && d.committee =="S") { return "#990000"}
-    	      else if (d.party == "D" && d.committee =="H") {return "blue"; }
-    	      else if (d.party == "D" && d.committee =="S") {return "#000066"; }
+    		  if( d.party === "R") { return "red"; }
+    		  else if(d.party === "D"){return "blue";}
     	      else {return "grey";}
     	  }
 	  });

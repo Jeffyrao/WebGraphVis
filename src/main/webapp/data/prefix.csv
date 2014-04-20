@@ -1,100 +1,100 @@
-id,url,name
-1,http://akaka.senate.gov/,Akaka, Daniel Kahikina
-2,http://alexander.senate.gov/,Alexander, Lamar
-3,http://allard.senate.gov/,Allard, Wayne
-4,http://allen.senate.gov/,Allen, George
-5,http://baucus.senate.gov/,Baucus, Max
-6,http://bayh.senate.gov/index1.html,Bayh, Evan
-7,http://bennett.senate.gov/,Bennett, Bob
-8,http://biden.senate.gov/,Biden, Joseph R.
-9,http://bingaman.senate.gov/,Bingaman, Jeff
-10,http://bond.senate.gov,Bond, Christopher S. "Kit"
-11,http://boxer.senate.gov/,Boxer, Barbara
-12,http://breaux.senate.gov/,Breaux, John
-13,http://brownback.senate.gov/,Brownback, Sam
-14,http://bunning.senate.gov/,Bunning, Jim
-15,http://www.senate.gov/~burns/,Burns, Conrad
-16,http://www.house.gov/burns/,Burns, Max
-17,http://byrd.senate.gov/,Byrd, Robert C.
-18,http://campbell.senate.gov/,Campbell, Ben Nighthorse
-19,http://cantwell.senate.gov/,Cantwell, Maria
-20,http://carper.senate.gov/,Carper, Thomas
-21,http://chafee.senate.gov/,Chafee, Lincoln D.
-22,http://chambliss.senate.gov/,Chambliss, Saxby
-23,http://clinton.senate.gov/,Clinton, Hillary Rodham
-24,http://cochran.senate.gov/,Cochran, Thad
-25,http://coleman.senate.gov,Coleman, Norm
-26,http://collins.senate.gov/,Collins, Susan
-27,http://conrad.senate.gov/,Conrad, Kent
-28,http://cornyn.senate.gov/,Cornyn, John
-29,http://corzine.senate.gov/,Corzine, Jon S.
-30,http://craig.senate.gov/,Craig, Larry
-31,http://crapo.senate.gov/,Crapo, Mike
-32,http://daschle.senate.gov/,Daschle, Tom
-33,http://dayton.senate.gov/,Dayton, Mark
-34,http://dewine.senate.gov/,DeWine, Mike
-35,http://dodd.senate.gov/,Dodd, Chris
-36,http://dole.senate.gov/,Dole, Elizabeth H.
-37,http://domenici.senate.gov/,Domenici, Pete V.
-38,http://dorgan.senate.gov/,Dorgan, Byron L.
-39,http://durbin.senate.gov/,Durbin, Dick
-40,http://edwards.senate.gov/,Edwards, John
-41,http://ensign.senate.gov/,Ensign, John
-42,http://enzi.senate.gov/,Enzi, Mike
-43,http://feingold.senate.gov/,Feingold, Russ
-44,http://feinstein.senate.gov/,Feinstein, Dianne
-45,http://fitzgerald.senate.gov/,Fitzgerald, Peter G.
-46,http://frist.senate.gov/,Frist, Bill
-47,http://graham.senate.gov/,Graham, Bob
-48,http://grassley.senate.gov/,Grassley, Chuck
-49,http://gregg.senate.gov/,Gregg, Judd
-50,http://hagel.senate.gov/,Hagel, Chuck
-51,http://harkin.senate.gov/,Harkin, Tom
-52,http://hatch.senate.gov/,Hatch, Orrin G.
-53,http://hollings.senate.gov/,Hollings, Ernest Fritz
-54,http://hutchison.senate.gov/,Hutchison, Kay Bailey
-55,http://inhofe.senate.gov/,Inhofe, James M.
-56,http://inouye.senate.gov/,Inouye, Daniel K.
-57,http://jeffords.senate.gov/,Jeffords, Jim
-58,http://johnson.senate.gov/,Johnson, Tim
-59,http://kennedy.senate.gov/,Kennedy, Edward
-60,http://kerry.senate.gov/,Kerry, John
-61,http://kohl.senate.gov/,Kohl, Herb
-62,http://kyl.senate.gov/,Kyl, Jon
-63,http://landrieu.senate.gov/,Landrieu, Mary L.
-64,http://lautenberg.senate.gov/,Lautenberg, Frank
-65,http://leahy.senate.gov/,Leahy, Patrick
-66,http://levin.senate.gov/,Levin, Carl
-67,http://www.house.gov/levin/,Levin, Sander M.
-68,http://lieberman.senate.gov/,Lieberman, Joe
-69,http://lincoln.senate.gov/,Lincoln, Blanche
-70,http://lott.senate.gov/,Lott, Trent
-71,http://lugar.senate.gov/,Lugar, Richard G.
-72,http://mccain.senate.gov/,McCain, John
-73,http://mcconnell.senate.gov/,McConnell, Mitch
-74,http://mikulski.senate.gov/,Mikulski, Barbara A.
-75,http://miller.senate.gov/,Miller, Zell
-76,http://murkowski.senate.gov/,Murkowski, Lisa
-77,http://murray.senate.gov/,Murray, Patty
-78,http://bennelson.senate.gov/,Nelson, Ben
-79,http://billnelson.senate.gov/,Nelson, Bill
-80,http://nickles.senate.gov/,Nickles, Don
-81,http://pryor.senate.gov,Pryor, Mark
-82,http://reid.senate.gov/,Reid, Harry
-83,http://roberts.senate.gov/,Roberts, Pat
-84,http://rockefeller.senate.gov/,Rockefeller, Jay
-85,http://santorum.senate.gov/,Santorum, Rick
-86,http://sarbanes.senate.gov/,Sarbanes, Paul S.
-87,http://schumer.senate.gov/,Schumer, Charles E.
-88,http://sessions.senate.gov/,Sessions, Jeff
-89,http://shelby.senate.gov/,Shelby, Richard C.
-90,http://gsmith.senate.gov/,Smith, Gordon H.
-91,http://snowe.senate.gov/,Snowe, Olympia J.
-92,http://www.senate.gov/~specter/,Specter, Arlen
-93,http://stabenow.senate.gov/,Stabenow, Debbie
-94,http://stevens.senate.gov/,Stevens, Ted
-95,http://talent.senate.gov/,Talent, James
-96,http://thomas.senate.gov/,Thomas, Craig
-97,http://voinovich.senate.gov/,Voinovich, George V.
-98,http://warner.senate.gov/,Warner, John
-99,http://wyden.senate.gov/,Wyden, Ron
+id,url,name,party
+1,http://akaka.senate.gov/,"Akaka, Daniel Kahikina",D
+5,http://baucus.senate.gov/,"Baucus, Max",D
+6,http://bayh.senate.gov/index1.html,"Bayh, Evan",D
+8,http://biden.senate.gov/,"Biden, Joseph R.",D
+9,http://bingaman.senate.gov/,"Bingaman, Jeff",D
+11,http://boxer.senate.gov/,"Boxer, Barbara",D
+12,http://breaux.senate.gov/,"Breaux, John",D
+17,http://byrd.senate.gov/,"Byrd, Robert C.",D
+19,http://cantwell.senate.gov/,"Cantwell, Maria",D
+20,http://carper.senate.gov/,"Carper, Thomas",D
+21,http://chafee.senate.gov/,"Chafee, Lincoln D.",D
+23,http://clinton.senate.gov/,"Clinton, Hillary Rodham",D
+27,http://conrad.senate.gov/,"Conrad, Kent",D
+29,http://corzine.senate.gov/,"Corzine, Jon S.",D
+32,http://daschle.senate.gov/,"Daschle, Tom",D
+33,http://dayton.senate.gov/,"Dayton, Mark",D
+35,http://dodd.senate.gov/,"Dodd, Chris",D
+38,http://dorgan.senate.gov/,"Dorgan, Byron L.",D
+39,http://durbin.senate.gov/,"Durbin, Dick",D
+40,http://edwards.senate.gov/,"Edwards, John",D
+43,http://feingold.senate.gov/,"Feingold, Russ",D
+44,http://feinstein.senate.gov/,"Feinstein, Dianne",D
+47,http://graham.senate.gov/,"Graham, Bob",D
+51,http://harkin.senate.gov/,"Harkin, Tom",D
+53,http://hollings.senate.gov/,"Hollings, Ernest Fritz",D
+56,http://inouye.senate.gov/,"Inouye, Daniel K.",D
+58,http://johnson.senate.gov/,"Johnson, Tim",D
+59,http://kennedy.senate.gov/,"Kennedy, Edward",D
+60,http://kerry.senate.gov/,"Kerry, John",D
+61,http://kohl.senate.gov/,"Kohl, Herb",D
+63,http://landrieu.senate.gov/,"Landrieu, Mary L.",D
+64,http://lautenberg.senate.gov/,"Lautenberg, Frank",D
+65,http://leahy.senate.gov/,"Leahy, Patrick",D
+66,http://levin.senate.gov/,"Levin, Carl",D
+67,http://www.house.gov/levin/,"Levin, Sander M.",D
+68,http://lieberman.senate.gov/,"Lieberman, Joe",D
+69,http://lincoln.senate.gov/,"Lincoln, Blanche",D
+74,http://mikulski.senate.gov/,"Mikulski, Barbara A.",D
+75,http://miller.senate.gov/,"Miller, Zell",D
+77,http://murray.senate.gov/,"Murray, Patty",D
+78,http://bennelson.senate.gov/,"Nelson, Ben",D
+79,http://billnelson.senate.gov/,"Nelson, Bill",D
+81,http://pryor.senate.gov,"Pryor, Mark",D
+82,http://reid.senate.gov/,"Reid, Harry",D
+84,http://rockefeller.senate.gov/,"Rockefeller, Jay",D
+86,http://sarbanes.senate.gov/,"Sarbanes, Paul S.",D
+87,http://schumer.senate.gov/,"Schumer, Charles E.",D
+92,http://www.senate.gov/~specter/,"Specter, Arlen",D
+93,http://stabenow.senate.gov/,"Stabenow, Debbie",D
+99,http://wyden.senate.gov/,"Wyden, Ron",D
+2,http://alexander.senate.gov/,"Alexander, Lamar",R
+3,http://allard.senate.gov/,"Allard, Wayne",R
+4,http://allen.senate.gov/,"Allen, George",R
+7,http://bennett.senate.gov/,"Bennett, Bob",R
+10,http://bond.senate.gov,"Bond, Christopher S. ""Kit""",R
+13,http://brownback.senate.gov/,"Brownback, Sam",R
+14,http://bunning.senate.gov/,"Bunning, Jim",R
+15,http://www.senate.gov/~burns/,"Burns, Conrad",R
+16,http://www.house.gov/burns/,"Burns, Max",R
+18,http://campbell.senate.gov/,"Campbell, Ben Nighthorse",R
+22,http://chambliss.senate.gov/,"Chambliss, Saxby",R
+24,http://cochran.senate.gov/,"Cochran, Thad",R
+25,http://coleman.senate.gov,"Coleman, Norm",R
+26,http://collins.senate.gov/,"Collins, Susan",R
+28,http://cornyn.senate.gov/,"Cornyn, John",R
+30,http://craig.senate.gov/,"Craig, Larry",R
+31,http://crapo.senate.gov/,"Crapo, Mike",R
+34,http://dewine.senate.gov/,"DeWine, Mike",R
+36,http://dole.senate.gov/,"Dole, Elizabeth H.",R
+37,http://domenici.senate.gov/,"Domenici, Pete V.",R
+41,http://ensign.senate.gov/,"Ensign, John",R
+42,http://enzi.senate.gov/,"Enzi, Mike",R
+45,http://fitzgerald.senate.gov/,"Fitzgerald, Peter G.",R
+46,http://frist.senate.gov/,"Frist, Bill",R
+48,http://grassley.senate.gov/,"Grassley, Chuck",R
+49,http://gregg.senate.gov/,"Gregg, Judd",R
+50,http://hagel.senate.gov/,"Hagel, Chuck",R
+52,http://hatch.senate.gov/,"Hatch, Orrin G.",R
+54,http://hutchison.senate.gov/,"Hutchison, Kay Bailey",R
+55,http://inhofe.senate.gov/,"Inhofe, James M.",R
+57,http://jeffords.senate.gov/,"Jeffords, Jim",R
+62,http://kyl.senate.gov/,"Kyl, Jon",R
+70,http://lott.senate.gov/,"Lott, Trent",R
+71,http://lugar.senate.gov/,"Lugar, Richard G.",R
+72,http://mccain.senate.gov/,"McCain, John",R
+73,http://mcconnell.senate.gov/,"McConnell, Mitch",R
+76,http://murkowski.senate.gov/,"Murkowski, Lisa",R
+80,http://nickles.senate.gov/,"Nickles, Don",R
+83,http://roberts.senate.gov/,"Roberts, Pat",R
+85,http://santorum.senate.gov/,"Santorum, Rick",R
+88,http://sessions.senate.gov/,"Sessions, Jeff",R
+89,http://shelby.senate.gov/,"Shelby, Richard C.",R
+90,http://gsmith.senate.gov/,"Smith, Gordon H.",R
+91,http://snowe.senate.gov/,"Snowe, Olympia J.",R
+94,http://stevens.senate.gov/,"Stevens, Ted",R
+95,http://talent.senate.gov/,"Talent, James",R
+96,http://thomas.senate.gov/,"Thomas, Craig",R
+97,http://voinovich.senate.gov/,"Voinovich, George V.",R
+98,http://warner.senate.gov/,"Warner, John",R
