@@ -13,7 +13,7 @@ public class BuildIncomingMatrix {
 		// TODO Auto-generated method stub
 		String nodeDir = "src/main/webapp/data/prefix.csv";
 		String linkDir = "src/main/webapp/data/sitelinks.csv";
-		String matrixDir = "src/main/webapp/data/inlink_matrix.json";
+		String matrixDir = "src/main/webapp/data/outlink_matrix.json";
 		// Get number of nodes
 		int numOfNodes = 0;
 		CsvReader reader = new CsvReader(nodeDir);
@@ -36,7 +36,7 @@ public class BuildIncomingMatrix {
 			int source_node = Integer.parseInt(reader.get("Source"));
 			int target_node = Integer.parseInt(reader.get("Target"));
 			double weight = Double.valueOf(reader.get("Weight"));
-			weights[target_node-1][source_node-1] = weight;
+			weights[source_node-1][target_node-1] = Math.log10(weight+1);
 		}
 		
 		BufferedWriter writer = new BufferedWriter(new FileWriter(matrixDir));

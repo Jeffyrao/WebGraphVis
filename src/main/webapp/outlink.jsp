@@ -36,7 +36,7 @@
 <script>
 
 var graph = {};
-var pad = 0.02
+var pad = 0.01
 
 var chord = d3.layout.chord()
 	.padding(pad)
@@ -58,7 +58,7 @@ d3.csv("./data/prefix.csv", function(error, nodes){
 		d3.json("./data/outlink_matrix.json", function(error,matrix) {
 		 var sum=0, prev_angle=0;
 	     chord.matrix(matrix);
-	     chord.groups()
+	     /*chord.groups()
 	     .forEach(function(d){
 	    	 d.sum = d.value;
 	    	 d.value = log10(d.value+1)+1;
@@ -98,7 +98,7 @@ d3.csv("./data/prefix.csv", function(error, nodes){
 	    	 d.target.endAngle = chords_mat[d.target.index][d.target.subindex].endAngle;
 	     })
 	     console.log(chord.groups());
-	     console.log(chord.chords());
+	     console.log(chord.chords());*/
 	    var g = svg.selectAll("g.group")
          .data(chord.groups())
        	 .enter().append("svg:g")
@@ -140,9 +140,9 @@ d3.csv("./data/prefix.csv", function(error, nodes){
     	    var target = nodes.filter(function(n){ return parseInt(n.id) ===d.target.index+1; });
     	    return "Chord Info:<br/>"
     	      +  source[0].name + " -> " + target[0].name
-    	      + ": " + d.source.value + "<br/>"
+    	      + ": " + parseInt(Math.pow(10,d.source.value)-1) + "<br/>"
     	      + target[0].name + " -> " + source[0].name
-    	      + ": " + d.target.value + "<br/>";
+    	      + ": " + parseInt(Math.pow(10,d.target.value)-1) + "<br/>";
     	  }
 
     	  function groupTip (d) {
@@ -172,7 +172,7 @@ d3.csv("./data/prefix.csv", function(error, nodes){
     	    svg.selectAll("path.chord")
     		   .filter(function(d) { 
     			   if(sid === tid)
-    			   		return d.source.index != sid && d.target.index != tid;
+    			   		return d.source.index != sid;
     			   else
     				   return d.source.index != sid || d.target.index != tid;})
     		   .transition()
