@@ -99,6 +99,10 @@ d3.csv("./data/prefix.csv", function(error, nodes){
 	     })
 	     console.log(chord.groups());
 	     console.log(chord.chords());*/
+	     chords = chord.chords()
+		  .filter(function(d){
+			  return d.source.index != d.target.index || d.source.value != 0.5;
+		  });
 	    var g = svg.selectAll("g.group")
          .data(chord.groups())
        	 .enter().append("svg:g")
@@ -126,7 +130,7 @@ d3.csv("./data/prefix.csv", function(error, nodes){
          .text(function(d) { return nodes.filter(function(n){ return parseInt(n.id) ===d.index+1; })[0].name; });
 
        var chordPaths = svg.selectAll("path.chord")
-             .data(chord.chords())
+             .data(chords)
            .enter().append("svg:path")
              .attr("class", "chord")
              .style("stroke", "grey")

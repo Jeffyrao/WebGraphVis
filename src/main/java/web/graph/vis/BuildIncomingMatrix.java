@@ -39,6 +39,16 @@ public class BuildIncomingMatrix {
 			weights[source_node-1][target_node-1] = Math.log10(weight+1);
 		}
 		
+		for(int i=0; i<numOfNodes; i++){
+			boolean flag = false;
+			for(int j=0; j<numOfNodes; j++){
+				if(weights[i][j]!=0)
+					flag = true;
+			}
+			if(flag == false){
+				weights[i][i] = 0.5;
+			}
+		}
 		BufferedWriter writer = new BufferedWriter(new FileWriter(matrixDir));
 		writer.write("[\n");
 		int last_node = 1;
