@@ -31,6 +31,15 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 		<servlet-name>ClickServlet</servlet-name>
 		<url-pattern>/ClickServlet</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>WordCountServlet</servlet-name>
+		<servlet-class>web.graph.vis.wordcount.WordCountServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WordCountServlet</servlet-name>
+		<url-pattern>/wordcount</url-pattern>
+	</servlet-mapping>
+	
 	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
