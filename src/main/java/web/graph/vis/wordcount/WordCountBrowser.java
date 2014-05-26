@@ -1,5 +1,9 @@
 package web.graph.vis.wordcount;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -13,6 +17,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
 
 public class WordCountBrowser {
   private static final Logger LOG = Logger.getLogger(WordCountBrowser.class);
@@ -28,9 +33,10 @@ public class WordCountBrowser {
     server.setHandler(context);
     context.addServlet(new ServletHolder(new WordCountServlet()), "/*");
 
-    ServletHolder holder = context.addServlet(DefaultServlet.class, "/wordcount/*");
+    ServletHolder holder = context.addServlet(DefaultServlet.class, "/WordCount/*");
     holder.setInitParameter("resourceBase", "src/main/webapp/");
     holder.setInitParameter("pathInfoOnly", "true");
+
   }
 
   public void start() throws Exception {
