@@ -49,16 +49,17 @@
       <configuration>
         <programs>
           <program>
-            <mainClass>web.graph.vis.BuildMatrix</mainClass>
-            <name>BuildMatrix</name>
-          </program>  
-          <program>
             <mainClass>web.graph.vis.wordcount.WordCountBrowser</mainClass>
             <name>WordCountBrowser</name>
           </program>              
          </programs>
        </configuration>                                                              
       </plugin>
+      <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>${jettyVersion}</version>
+        </plugin>
     </plugins>
   </build>
 	
@@ -127,7 +128,7 @@
 			<version>1.1.1</version>
 		</dependency>   
 		<!-- Begin HBase Dependencies -->
-		<dependency>
+		 <dependency>
 	      <groupId>org.apache.hbase</groupId>
 	      <artifactId>hbase</artifactId>
 	      <version>${hbase.version}</version>
@@ -180,6 +181,14 @@
 	          <groupId>org.mortbay.jetty</groupId>
 	          <artifactId>jsp-2.1</artifactId>
 	        </exclusion>
+	        <exclusion>
+                <groupId>tomcat</groupId>
+                <artifactId>jasper-compiler</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>tomcat</groupId>
+                <artifactId>jasper-runtime</artifactId>
+            </exclusion>
 	      </exclusions>
 	    </dependency>
 	    <dependency>
@@ -187,22 +196,42 @@
 	      <artifactId>hadoop-common</artifactId>
 	      <version>${hadoop.version2}</version>
 	      <exclusions>
-	        <exclusion>
-	          <groupId>javax.servlet</groupId>
-	          <artifactId>servlet-api</artifactId>
-	        </exclusion>
-	        <exclusion>
-	          <groupId>org.mortbay.jetty</groupId>
-	          <artifactId>jetty</artifactId>
-	        </exclusion>
-	        <exclusion>
-	          <groupId>org.mortbay.jetty</groupId>
-	          <artifactId>jetty-util</artifactId>
-	        </exclusion>
-	        <exclusion>
-	          <groupId>org.mortbay.jetty</groupId>
-	          <artifactId>jsp-2.1</artifactId>
-	        </exclusion>
+          	<exclusion>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jsp-2.1</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jsp-api-2.1</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>servlet-api-2.1</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>tomcat</groupId>
+                <artifactId>jasper-compiler</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>tomcat</groupId>
+                <artifactId>jasper-runtime</artifactId>
+            </exclusion>
 	      </exclusions>
 	    </dependency>
 	    <dependency>
