@@ -17,12 +17,10 @@ body {
   stroke: #000;
   stroke-width: 2px;
 }
-
-
 .contrib-legend{font-size:11px;color:#999;position:fixed;
-    bottom:160px;
+    bottom:100px;
     left:50%;
-    margin-left:-200px;}
+    margin-left:-150px;}
 .contrib-legend .legend{display:inline-block;list-style:none;margin:0 5px;position:relative;bottom:-1px}
 .contrib-legend .legend li{display:inline-block;width:10px;height:10px}
 .RdYlGn .q0{fill:#eee}
@@ -35,13 +33,14 @@ body {
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
-
-var width = 960,
-    height = 136,
-    cellSize = 17; // cell size
-
+var margin = {top: 9, right: 20, bottom: 40, left: -250},
+width = 960 - margin.right - margin.left, // width
+height = 200 - margin.top - margin.bottom, // height
+cellSize = 17; // cell size
+    
 var day = d3.time.format("%w"),
     week = d3.time.format("%U"),
+    month = d3.time.format("%b");
     percent = d3.format(".1%"),
     format = d3.time.format("%Y%m%d");
 
@@ -61,11 +60,15 @@ var svg = d3.select("body").selectAll("svg")
 svg.append("text")
     .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
     .style("text-anchor", "middle")
+    .style("font-size",14)
     .text(function(d) { return d; });
 
-var rect = svg.selectAll(".day")
-    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-  .enter().append("rect")
+var days = svg.selectAll(".day")
+		.data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		.enter()
+		
+// generate a rect for each day
+var rect = days.append("rect")
     .attr("class", "day")
     .attr("width", cellSize)
     .attr("height", cellSize)
@@ -73,14 +76,38 @@ var rect = svg.selectAll(".day")
     .attr("y", function(d) { return day(d) * cellSize; })
     .datum(format);
 
+// show day in the rect
+days.append("text")
+	.attr("x", function(d) { return week(d) * cellSize + cellSize/3;})
+	.attr("y", function(d) { return day(d) * cellSize + 7*cellSize/10; })
+	.attr("fill","black")
+    .style("stroke-width", 1)
+    .style("font-size",8)
+    .text(function(d) { return +d.toString().split(" ")[2];});
+
 rect.append("title")
     .text(function(d) { return d; });
 
-svg.selectAll(".month")
-    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-  .enter().append("path")
+var months = svg.selectAll(".month")
+		.data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		.enter()
+// add month boundary
+months.append("path")
     .attr("class", "month")
     .attr("d", monthPath);
+
+// add month name
+svg.selectAll("text.month")
+    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+  .enter().append("text")
+    .attr("x", function(d) { return week(d) * cellSize + 2*cellSize; })
+    .attr("y", -0.5 * cellSize)
+    .attr("fill","black")
+    .style("stroke-width", 3)
+    .style("font-size",14)
+    .style("font-family","Times New Roman")
+    .text(month);
+
 
 d3.csv("./data/c108-histogram.csv", function(error, csv) {
   var max = 0;	
@@ -95,10 +122,23 @@ d3.csv("./data/c108-histogram.csv", function(error, csv) {
     .rollup(function(d) { return +d[0].Pages; })
     .map(csv);
 
-  rect.filter(function(d) { return d in data; })
-      .attr("class", function(d) { return "day " + color(data[d]*1.0/max); })
+  //rect.filter(function(d) { return d in data; })
+  
+    rect.attr("class", function(d) { 
+    	if(d in data) {
+    		return "day " + color(data[d]*1.0/max); 
+    	}else{
+    		return "day " + 0;
+    	}
+    	})
     .select("title")
-      .text(function(d) { return d + ": " + data[d]; });
+      .text(function(d) { if(d in data) {
+    	  return d + ": " + data[d]; 
+    	  } else {
+    		  return d+ ": " + 0;
+    	  }
+      });
+  
 });
 
 function monthPath(t0) {
