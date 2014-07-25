@@ -29,6 +29,21 @@
 	#circle:hover path.fade {
 	  display: none;
 	}
+	
+	p.incoming {
+		position: absolute;
+		top: -15px;
+		left: 200px;
+		font-size:200%;	
+	}
+	
+	p.outgoing {
+		position: absolute;
+		top: -15px;
+		right: 200px;
+		font-size:200%;	
+	}
+	
 </style>
 <body>
 <div id="tooltip"></div>
@@ -43,7 +58,7 @@ var chord = d3.layout.chord()
 	.padding(pad)
     .sortSubgroups(d3.descending)
 
-var w = 1280, h = 1000, r1 = h / 3, r0 = r1 - 110;
+var w = 1280, h = 800, r1 = 3*h / 7, r0 = r1 - 110;
 
 var arc = d3.svg.arc()
 .innerRadius(r0)
@@ -53,12 +68,16 @@ var svg = d3.select("body").append("svg")
     .attr("width", w)
     .attr("height", h);
 var inlink_svg = svg.append("g")
-    .attr("transform", "translate(" + w / 4 + "," + h / 3 + ")");
+    .attr("transform", "translate(" + w / 4 + "," + h/2 + ")");
 var outlink_svg = svg.append("g")
-.attr("transform", "translate(" + 3*w / 4 + "," + h / 3 + ")");
+.attr("transform", "translate(" + 3*w / 4 + "," + h/2 + ")");
 
-LoadLink("./data/inlink_matrix.json",inlink_svg,"in");
-LoadLink("./data/outlink_matrix.json",outlink_svg,"out");
+var linkDir = './data/matrixlinks/'
+var defaultDate = '200401';
+var myDate = location.search.split('date=')[1] ? location.search.split('date=')[1] : defaultDate;
+
+LoadLink(linkDir+'inlinks-'+myDate+'.json',inlink_svg,"in");
+LoadLink(linkDir+'outlinks-'+myDate+'.json',outlink_svg,"out");
 
 function LoadLink(linkfile, svg, option){
 	d3.csv("./data/prefix.csv", function(error, prefix){
@@ -126,7 +145,7 @@ function LoadLink(linkfile, svg, option){
 	         .style("stroke", "grey")
 	         .style("fill", function(d) { return color(nodes[d.index]); })
 	         .attr("d", arc);
-	
+		    
 	     	g.append("svg:text")
 	         .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
 	         .attr("dy", ".35em")
@@ -158,17 +177,23 @@ function chordTip (d) {
     var source = nodes.filter(function(n){ return parseInt(n.id) ===d.source.index+1; });
     var target = nodes.filter(function(n){ return parseInt(n.id) ===d.target.index+1; });
     if(d.option === "in"){
-    	weight1 = parseInt(Math.pow(10,d.source.value-1));
-    	weight2 = parseInt(Math.pow(10,d.target.value-1));
+    	weight1 = parseInt(Math.pow(10,d.source.value)-1);
+    	weight2 = parseInt(Math.pow(10,d.target.value)-1);
+    	return "Chord Info:<br/>"
+        +  target[0].name + " -> " + source[0].name
+        + ": " + weight1 + "<br/>"
+        + source[0].name + " -> " + target[0].name
+        + ": " + weight2 + "<br/>";
     }else{
     	weight1 = parseInt(Math.pow(10,d.source.value)-1);
     	weight2 = parseInt(Math.pow(10,d.target.value)-1);
+    	return "Chord Info:<br/>"
+        +  source[0].name + " -> " + target[0].name
+        + ": " + weight1 + "<br/>"
+        + target[0].name + " -> " + source[0].name
+        + ": " + weight2 + "<br/>";
     }
-    return "Chord Info:<br/>"
-      +  target[0].name + " -> " + source[0].name
-      + ": " + weight1 + "<br/>"
-      + source[0].name + " -> " + target[0].name
-      + ": " + weight2 + "<br/>";
+    
   }
 
   function groupTip (d) {
@@ -230,3 +255,6 @@ function chordTip (d) {
 	  return Math.log(val) / Math.LN10;
   }
 </script>
+<p class="incoming"> Incoming Links </p>
+<p class="outgoing"> Outgoing Links </p>
+</body>
