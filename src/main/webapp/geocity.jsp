@@ -112,11 +112,7 @@ function LoadLink(linkfile, svg, option){
 		    	 chords_mat[i][i].startAngle = start_angle;
 		    	 chords_mat[i][i].endAngle = start_angle + 
  			 		(Math.pow(10,matrix[i][i])-1)*groups[i].angle/groups[i].value;
-		    	 if(i==0){
-		    		 console.log(Math.pow(10,matrix[i][i])-1);
-		    		 console.log(groups[i].angle);
-		    		 console.log(groups[i].value);
-		    	 }
+		    	 
 		    	 start_angle = chords_mat[i][i].endAngle;
 		    	 for( var j=0; j<nodes.length; j++){
 		    		 if(j==i) continue;
@@ -132,7 +128,6 @@ function LoadLink(linkfile, svg, option){
 		    		 }
 		    	 }
 		     }
-		     console.log(chords_mat);
 		     
 		     chord.chords()
 		 	 .forEach(function(d){
@@ -149,7 +144,6 @@ function LoadLink(linkfile, svg, option){
 		     
 			var chords = chord.chords()
 					.filter(function(d){
-						
 				    	 return (d.source.value > 2 || d.target.value > 2) && (d.source.index != d.target.index) ;
 				     });;
 			console.log(groups);
@@ -244,7 +238,7 @@ function chordTip (d) {
       inlink_svg.selectAll("path.chord")
 	   .filter(function(d) { 
 		   if(sid === tid){
-		   	   return d.source.index != sid && d.target.index != sid; 
+		   	   return (d.source.index != sid && d.target.index != sid) || d.source.value < 2; 
 		   }else{
 			   return d.source.index != sid || d.target.index != tid; 
 		   }
@@ -255,7 +249,7 @@ function chordTip (d) {
       outlink_svg.selectAll("path.chord")
 	   .filter(function(d) { 
 		   if(sid === tid){
-		   	   return d.source.index != sid && d.target.index != sid; 
+		   	   return (d.source.index != sid && d.target.index != sid) || d.source.value < 2; 
 		   }else{
 			   return d.source.index != sid || d.target.index != tid; 
 		   }
