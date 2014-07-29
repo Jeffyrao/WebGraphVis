@@ -82,7 +82,6 @@ function LoadLink(linkfile, svg, option){
 			nodes = cities;
 			chord.matrix(matrix);
 			
-			
 			var groupWeights = new Array(nodes.length);
 			for(var i=0; i< cities.length; i++){
 				groupWeights[i] = 0;
@@ -150,8 +149,8 @@ function LoadLink(linkfile, svg, option){
 		     
 			var chords = chord.chords()
 					.filter(function(d){
-						//(d.source.value > 2 || d.target.value > 2) &&
-				    	 return (d.source.index != d.target.index) ;
+						
+				    	 return (d.source.value > 2 || d.target.value > 2) && (d.source.index != d.target.index) ;
 				     });;
 			console.log(groups);
 			console.log(chords);
