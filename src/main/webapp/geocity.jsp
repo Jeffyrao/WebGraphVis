@@ -72,8 +72,10 @@ var inlink_svg = svg.append("g")
                  .attr("transform", "translate(" + w / 4 + "," + h/2 + ")");
 var outlink_svg = svg.append("g")
                  .attr("transform", "translate(" + 3*w / 4 + "," + h/2 + ")");
-LoadLink('./data/geocities-inlink.json', inlink_svg, 'in');
-LoadLink('./data/geocities-outlink.json', outlink_svg, 'out');
+
+var option = location.search.split('noself=')[1] ? "-noself" : "";
+LoadLink('./data/geocities-inlink'+option+'.json', inlink_svg, 'in');
+LoadLink('./data/geocities-outlink'+option+'.json', outlink_svg, 'out');
 
 function LoadLink(linkfile, svg, option){
 	d3.csv("./data/geocities-neighborhood.csv", function(error, cities){
@@ -146,8 +148,7 @@ function LoadLink(linkfile, svg, option){
 					.filter(function(d){
 				    	 return (d.source.value > 2 || d.target.value > 2) && (d.source.index != d.target.index) ;
 				     });;
-			console.log(groups);
-			console.log(chords);
+			
 			var g = svg.selectAll("g.group")
 	        .data(chord.groups())
 	      	 .enter().append("svg:g")
@@ -179,7 +180,7 @@ function LoadLink(linkfile, svg, option){
 	          .enter().append("svg:path")
 	            .attr("class", "chord")
 	            .style("stroke", "grey")
-	            .style("fill", function(d) { return fill(d.index); })
+	            .style("fill", function(d) { return fill(d.source.index); })
 	            .attr("d", d3.svg.chord().radius(r0))
 	            .on("mouseover", mouseover)
 	            .on("mouseout", mouseout);
