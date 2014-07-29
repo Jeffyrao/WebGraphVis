@@ -81,10 +81,20 @@ function LoadLink(linkfile, svg, option){
 			var sum=0, prev_angle=0;
 			nodes = cities;
 			chord.matrix(matrix);
+			
+			
+			var groupWeights = new Array(nodes.length);
+			for(var i=0; i< cities.length; i++){
+				groupWeights[i] = 0;
+				for(var j=0; j< cities.length; j++){
+					groupWeights[i] += parseInt(Math.pow(10,matrix[i][j])-1);
+				}
+			}
+			
 			chord.groups()
 		     .forEach(function(d){
-		    	 d.sum = d.value;
-		    	 d.value = log10(d.value)-1;
+		    	 d.logvalue = d.value;
+		    	 d.value = groupWeights[d.index];
 		    	 sum += d.value;
 		     });
 			chord.groups()
@@ -99,12 +109,23 @@ function LoadLink(linkfile, svg, option){
 		     for(var i=0; i<nodes.length; i++){
 		    	 chords_mat[i] = new Array(nodes.length);
 		    	 var start_angle = groups[i].startAngle;
+		    	 chords_mat[i][i] = {};
+		    	 chords_mat[i][i].startAngle = start_angle;
+		    	 chords_mat[i][i].endAngle = start_angle + 
+ 			 		(Math.pow(10,matrix[i][i])-1)*groups[i].angle/groups[i].value;
+		    	 if(i==0){
+		    		 console.log(Math.pow(10,matrix[i][i])-1);
+		    		 console.log(groups[i].angle);
+		    		 console.log(groups[i].value);
+		    	 }
+		    	 start_angle = chords_mat[i][i].endAngle;
 		    	 for( var j=0; j<nodes.length; j++){
+		    		 if(j==i) continue;
 		    		 chords_mat[i][j]={};
 		    		 if(matrix[i][j]!==0){
 		    			 chords_mat[i][j].startAngle = start_angle;
 		    			 chords_mat[i][j].endAngle = start_angle + 
-		    			 	matrix[i][j]*(groups[i].endAngle-groups[i].startAngle)/groups[i].sum;
+		    			 	(Math.pow(10,matrix[i][j])-1)*groups[i].angle/groups[i].value;
 		    			 start_angle = chords_mat[i][j].endAngle;
 		    		 }else{
 		    			 chords_mat[i][j].startAngle = groups[i].endAngle;
@@ -112,9 +133,10 @@ function LoadLink(linkfile, svg, option){
 		    		 }
 		    	 }
 		     }
+		     console.log(chords_mat);
 		     
 		     chord.chords()
-		     .forEach(function(d){
+		 	 .forEach(function(d){
 		    	 d.source.startAngle = chords_mat[d.source.index][d.source.subindex].startAngle;
 		    	 d.source.endAngle = chords_mat[d.source.index][d.source.subindex].endAngle;
 		    	 d.target.startAngle = chords_mat[d.target.index][d.target.subindex].startAngle;
@@ -126,9 +148,13 @@ function LoadLink(linkfile, svg, option){
 		    	 d.option = option;
 		     });
 		     
-			var chords = chord.chords();
+			var chords = chord.chords()
+					.filter(function(d){
+						//(d.source.value > 2 || d.target.value > 2) &&
+				    	 return (d.source.index != d.target.index) ;
+				     });;
+			console.log(groups);
 			console.log(chords);
-			
 			var g = svg.selectAll("g.group")
 	        .data(chord.groups())
 	      	 .enter().append("svg:g")
@@ -215,20 +241,22 @@ function chordTip (d) {
       .style("top", function () { return (d3.event.pageY - 80)+"px"})
       .style("left", function () { return (d3.event.pageX - 130)+"px";})
     
+      
       inlink_svg.selectAll("path.chord")
 	   .filter(function(d) { 
 		   if(sid === tid){
-		   	   return d.source.index != sid; 
+		   	   return d.source.index != sid && d.target.index != sid; 
 		   }else{
 			   return d.source.index != sid || d.target.index != tid; 
 		   }
 		})
 	   .transition()
 	   .style("opacity", 0);
+    
       outlink_svg.selectAll("path.chord")
 	   .filter(function(d) { 
 		   if(sid === tid){
-		   	   return d.target.index != sid; 
+		   	   return d.source.index != sid && d.target.index != sid; 
 		   }else{
 			   return d.source.index != sid || d.target.index != tid; 
 		   }

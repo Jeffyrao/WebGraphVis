@@ -21,10 +21,11 @@ public class GenerateGeoCityData {
 		while((line = bf.readLine()) != null){
 			String[] groups = line.split(",");
 			for(int target=0; target<groups.length; target++){
+				int weight = Integer.parseInt(groups[target]);
 				if(option.equals("in")){
-					weights[target][source] = Math.log10(Integer.parseInt(groups[target])+1);
+					weights[target][source] = Math.log10(weight+1);
 				}else{
-					weights[source][target] = Math.log10(Integer.parseInt(groups[target])+1);
+					weights[source][target] = Math.log10(weight+1);
 				}
 				
 			}
