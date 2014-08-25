@@ -9,8 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.csvreader.CsvReader;
-import com.sun.tools.example.debug.gui.SourceModel.Line;
-import com.sun.tools.internal.jxc.apt.Options;
 
 public class GenerateJSonData {
 	static String option = "out";
