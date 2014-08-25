@@ -29,25 +29,39 @@
 var topic = location.search.split('topic=')[1] ? topic = location.search.split('topic=')[1] : "";
 
 d3.json("data/query-words.json", function(error, wordset){
-	if (topic != "") {
-		var words = wordset[topic]['words'];
-		plotQuery(topic, dataset[topic]["qrels"], dataset[topic]["query"])
-		for (var word in words){
-			if (words.hasOwnProperty(word)) {
-				plot(topic, words[word], word);
-			}
-		}
-	} else {
-		for(var i = 1; i <= 49; i++) {
-			var words = wordset[i]['words'];
-			plotQuery(i, dataset[i]["qrels"], dataset[i]["query"]);
+	d3.json("data/query-bigrams.json", function(error, bigramset){
+		if (topic != "") {
+			var words = wordset[topic]['words'];
+			plotQuery(topic, dataset[topic]["qrels"], dataset[topic]["query"])
 			for (var word in words){
 				if (words.hasOwnProperty(word)) {
-					plot(i, words[word], word);
+					plot(topic, words[word], word);
+				}
+			}
+			var bigrams = bigramset[i]['words'];
+			for (var bigram in bigrams){
+				if (bigrams.hasOwnProperty(bigram)) {
+					plot(i, bigrams[bigram], bigram);
+				}
+			}
+		} else {
+			for(var i = 1; i <= 49; i++) {
+				var words = wordset[i]['words'];
+				plotQuery(i, dataset[i]["qrels"], dataset[i]["query"]);
+				for (var word in words){
+					if (words.hasOwnProperty(word)) {
+						plot(i, words[word], word);
+					}
+				}
+				var bigrams = bigramset[i]['words'];
+				for (var bigram in bigrams){
+					if (bigrams.hasOwnProperty(bigram)) {
+						plot(i, bigrams[bigram], bigram);
+					}
 				}
 			}
 		}
-	}
+	});
 });
 
 function plot(topic, data, word) {
