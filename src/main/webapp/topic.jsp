@@ -3,7 +3,8 @@
 <meta charset="utf-8">
 <title>Scatterplot</title>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="lib/trec2011-data.js"></script>
+<script type="text/javascript" src="lib/trec2011-2012-data.js"></script>
+<script type="text/javascript" src="lib/trec2013-2014-data.js"></script>
 <script type="text/javascript" src="lib/visualize.js"></script>
 <link rel="stylesheet" href="lib/visualize.css" type="text/css" />
 <style>
@@ -26,38 +27,40 @@
 <div id="tooltip"></div>
 </body>
 <script>
-var topic = location.search.split('topic=')[1] ? topic = location.search.split('topic=')[1] : "";
+var year = location.search.split('year=')[1] ? topic = location.search.split('year=')[1] : "2011";
 
-d3.json("data/query-words.json", function(error, wordset){
-	d3.json("data/query-bigrams.json", function(error, bigramset){
-		if (topic != "") {
-			var words = wordset[topic]['words'];
-			plotQuery(topic, dataset[topic]["qrels"], dataset[topic]["query"])
+console.log(year);
+if (year == "2011") {
+	unigram_file = "data/query-words-1112.json";
+	bigram_file = "data/query-bigrams-1112.json";
+	topic_range = [1, 110];
+	dataset = dataset_2011;
+	days = 18;
+} else {
+	unigram_file = "data/query-words-1314.json";
+	bigram_file = "data/query-bigrams-1314.json";
+	topic_range = [111, 225];
+	dataset = dataset_2013;
+	days = 59;
+}
+console.log(days);
+
+d3.json(unigram_file, function(error, wordset){
+	d3.json(bigram_file, function(error, bigramset){
+		for(var i = topic_range[0]; i <= topic_range[1]; i++) {
+			if (i==50 || i==76) continue;
+			var words = wordset[i]['words'];
+			var query = dataset[i]["query"];
+			plotQuery(i, dataset[i]["qrels"], query, days);
 			for (var word in words){
 				if (words.hasOwnProperty(word)) {
-					plot(topic, words[word], word);
+					plot(i, words[word], word, days);
 				}
 			}
 			var bigrams = bigramset[i]['words'];
 			for (var bigram in bigrams){
-				if (bigrams.hasOwnProperty(bigram)) {
-					plot(i, bigrams[bigram], bigram);
-				}
-			}
-		} else {
-			for(var i = 1; i <= 49; i++) {
-				var words = wordset[i]['words'];
-				plotQuery(i, dataset[i]["qrels"], dataset[i]["query"]);
-				for (var word in words){
-					if (words.hasOwnProperty(word)) {
-						plot(i, words[word], word);
-					}
-				}
-				var bigrams = bigramset[i]['words'];
-				for (var bigram in bigrams){
-					if (bigrams.hasOwnProperty(bigram)) {
-						plot(i, bigrams[bigram], bigram);
-					}
+				if (bigrams.hasOwnProperty(bigram) && query.toLowerCase().indexOf(bigram) > -1) {
+					plot(i, bigrams[bigram], bigram, days);
 				}
 			}
 		}
@@ -67,7 +70,6 @@ d3.json("data/query-words.json", function(error, wordset){
 function plot(topic, data, word) {
 	var w = 800;
 	var h = 60;
-	var days = 18;
 	var topPadding = 5;
 	var leftPadding = 10;
 	var rightPadding = 50;

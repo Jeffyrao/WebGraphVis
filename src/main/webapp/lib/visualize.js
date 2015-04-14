@@ -1,7 +1,6 @@
-function plotQuery(topic, data, query) {
+function plotQuery(topic, data, query, days) {
 var w = 800;
 var h = 60;
-var days = 18;
 var topPadding = 5;
 var leftPadding = 10;
 var rightPadding = 50;
