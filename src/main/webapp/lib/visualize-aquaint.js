@@ -17,7 +17,7 @@ function plotQuery(topic, data, query, years) {
     if (data[i][2] > 0) { // count relevant documents
       var bucket = Math.floor(data[i][1] / interval);
       total++;
-      arr[interval_count - bucket]++;
+      arr[interval_count - bucket - 1]++;
     }
   }
   console.log("total:" + total);

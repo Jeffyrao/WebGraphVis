@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class GenerateGeoCityData {
-	static String option = "out";
+	static String option = "in";
 	
 	public static void main(String[] args) throws IOException{
 		int numOfNodes = 31;
@@ -21,6 +21,7 @@ public class GenerateGeoCityData {
 		while((line = bf.readLine()) != null){
 			String[] groups = line.split(",");
 			for(int target=0; target<groups.length; target++){
+				if(source == target) continue;
 				int weight = Integer.parseInt(groups[target]);
 				if(option.equals("in")){
 					weights[target][source] = Math.log10(weight+1);
@@ -32,7 +33,7 @@ public class GenerateGeoCityData {
 			source++;
 		}
 		
-		String matrixFile = "src/main/webapp/data/geocities-"+option+"link.json";
+		String matrixFile = "src/main/webapp/data/geocities-"+option+"link-noself.json";
 		BufferedWriter writer = new BufferedWriter(new FileWriter(matrixFile));
 		writer.write("[\n");
 		int last_node = 1;
