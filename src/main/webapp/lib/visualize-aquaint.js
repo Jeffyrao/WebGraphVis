@@ -18,10 +18,11 @@ function plotQuery(topic, data, query, years) {
       var bucket = Math.floor(data[i][1] / interval);
       total++;
       arr[interval_count - bucket - 1]++;
+      //arr[bucket]++;
     }
   }
   console.log("total:" + total);
-  console.log(arr);
+  //console.log(arr);
   for (var i=0; i<interval_count; i++) {
     if (total != 0) {
       arr[i] /= total;
